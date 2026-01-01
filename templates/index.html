@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AADISONGS</title>
+    <style>
+        body {
+            font-family: JetBrains Mono NL, monospace;
+            background: #121212;
+            color: white;
+            text-align: center;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        hr {
+            margin: 40px 0;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <h1>AADISONGS</h1>
+    <hr>
+    <h2>🎵 Artist → Top Songs</h2>
+
+    <form method="POST">
+        <input type="text" name="artist_name" placeholder="Enter artist name" required>
+        <button type="submit" name="action" value="artist">Search</button>
+    </form>
+
+    {% if songs %}
+        <h2>Top songs by {{ artist }}</h2>
+        <ul>
+            {% for song in songs %}
+                <li>{{ loop.index }}. {{ song }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <hr>
+
+    <h2>🎤 Song → Artist</h2>
+
+    <form method="POST">
+        <input type="text" name="song_name" placeholder="Enter song name" required>
+        <button type="submit" name="action" value="song">Search</button>
+    </form>
+
+{% if artists %}
+    <h2>Artists for "{{ song }}"</h2>
+    <ul>
+        {% if artists is string %}
+            <li>{{ artists }}</li>
+        {% else %}
+            {% for artist in artists %}
+                <li>{{ loop.index }}. {{ artist }}</li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+{% else %}
+    <p>No artists found.</p>
+{% endif %}
+
+
+    <hr>
+
+    <h2>🎵 Play Song</h2>
+    <form method="POST">
+        <input type="text" name="song_name_" placeholder="Enter song name to play" required>
+        <button type="submit" name="action" value="play">Play</button>
+    </form>
+    {% if preview_url %}
+
+    <iframe src="{{ preview_url }}"></iframe>
+    
+    {% endif %}
+    <hr>
+</body>
+</html>
