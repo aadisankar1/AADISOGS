@@ -12,6 +12,8 @@
         input, button {
             padding: 10px;
             margin: 5px;
+            border-radius: 2cm;
+
         }
         ul {
             list-style: none;
@@ -20,6 +22,13 @@
         hr {
             margin: 40px 0;
             opacity: 0.3;
+        }
+        button{
+            background-color: #1db954;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 2cm;
         }
     </style>
 </head>
@@ -69,9 +78,9 @@
 
     <hr>
 
-    <h2>🎵 Play Song</h2>
+    <h2>🎵 Play Song Preview</h2>
     <form method="POST">
-        <input type="text" name="song_name_" placeholder="Enter song name to play" required>
+        <input type="text" name="song_name_" placeholder="Enter song name" required>
         <button type="submit" name="action" value="play">Play</button>
     </form>
     {% if preview_url %}
@@ -80,7 +89,22 @@
     
     {% endif %}
     <hr>
-    © Lime techno by Aadisankar NS
+    <h2>⬇️ Download Song</h2>
+
+<form method="POST">
+    <input type="text" name="song_name_dl" placeholder="Enter song name" required>
+    <button type="submit" name="action" value="download">Download</button>
+</form>
+
+{% if download_link %}
+    <p>
+        <a href="{{ download_link }}" target="_blank" style="color:#1db954;">
+            Click here to download 🎧
+        </a>
+    </p>
+{% endif %}
+
+    <hr>
+     © Lime techno by Aadisankar NS
 </body>
 </html>
-
