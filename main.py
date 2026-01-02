@@ -3,6 +3,7 @@ import os
 import base64
 from requests import post, get
 from flask import Flask, request, jsonify, render_template
+from urllib.parse import quote
 
 load_dotenv()
 CLIENT_ID = os.getenv("CLIENT_ID")
@@ -78,6 +79,35 @@ def get_track_id_by_song(token, song_name):
 
     if not items:
         return None
+    
+def get_song_url(song_name):
+    nbase_url = "https://dlkitgo-o3njscwgh-aadisankar1s-projects.vercel.app/spotify/search?q=" + quote(song_name)
+    base_url = "https://dlkitgo.vercel.app/spotify/search?q=" + quote(song_name)
+    try:
+        response = get(base_url, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        results = data.get('results', [])
+        if response.status_code == 200: 
+            return results[0].get('url', 'URL not found')
+    except Exception as e:
+        print(f"Error fetching song URL: {e}")
+
+def get_download_link(song_name):
+    url = get_song_url(song_name)
+    if url == 'URL not found':
+        return None
+    try:
+        base_download_link = "https://dlkitgo.vercel.app/spotify/stream?url=" + url
+        data = get(base_download_link).json()
+        source = data.get('source', [])
+        if not source:
+            return None
+    except Exception as e:
+        print(f"Error fetching download link: {e}")
+        return None
+    download_link = source[0].get('url', None)
+    return download_link
 
     return f"https://open.spotify.com/embed/track/{items[0]['id']}"
 
@@ -89,7 +119,8 @@ def index():
     artists = []
     artist_name = ""
     song_name = ""
-    preview_url = None  
+    preview_url = None
+    download_link = None
 
     if request.method == "POST":
         action = request.form.get("action")
@@ -112,6 +143,9 @@ def index():
             song_name = request.form.get("song_name_")
             preview_url = get_track_id_by_song(token, song_name)
 
+        elif action == "download":
+            song_name = request.form.get("song_name_dl")
+            download_link = get_download_link(song_name)
 
     return render_template(
         "index.html",
@@ -119,13 +153,9 @@ def index():
         artist=artist_name,
         artists=artists,
         song=song_name,
-        preview_url=preview_url
+        preview_url=preview_url,
+        download_link=download_link
     )
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
-
-
-
-
-
+    app.run(host="0.0.0.0", port=5000)
