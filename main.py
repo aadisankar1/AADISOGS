@@ -79,6 +79,8 @@ def get_track_id_by_song(token, song_name):
 
     if not items:
         return None
+
+    return f"https://open.spotify.com/embed/track/{items[0]['id']}"
     
 def get_song_url(song_name):
     nbase_url = "https://dlkitgo-o3njscwgh-aadisankar1s-projects.vercel.app/spotify/search?q=" + quote(song_name)
@@ -159,3 +161,4 @@ def index():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
