@@ -95,6 +95,18 @@ def get_song_url(song_name):
     except Exception as e:
         print(f"Error fetching song URL: {e}")
 
+def get_song_name(song_name):
+    base_url = "https://dlkitgo.vercel.app/spotify/search?q=" + quote(song_name)
+    try:
+        response = get(base_url, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        results = data.get('results', [])
+        if response.status_code == 200: 
+            return results[0].get('name', 'SONG not found')
+    except Exception as e:
+        print(f"Error fetching song SONG: {e}")
+
 def get_download_link(song_name):
     url = get_song_url(song_name)
     if url == 'URL not found':
@@ -156,9 +168,11 @@ def index():
         artists=artists,
         song=song_name,
         preview_url=preview_url,
-        download_link=download_link
+        download_link=download_link,
+        song_name_dl=get_song_name(request.form.get("song_name_dl", ""))
     )
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
 
